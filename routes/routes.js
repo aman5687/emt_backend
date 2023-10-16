@@ -102,7 +102,7 @@ router.post("/register", async (req, res) => {
 
 
 // login api
-router.get("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const sessionStorage = req.session.userInfo;
