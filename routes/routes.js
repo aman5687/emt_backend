@@ -9,20 +9,27 @@ const bcrypt = require("bcryptjs");
 
 
 
-
 // registration api starts
 router.post("/register", async (req, res) => {
 
-    const name = req.body.name
+    const firstName = req.body.firstName
+    const lastName = req.body.lastName
     const email = req.body.email
     const number = req.body.number
     const password = req.body.password
     const token = uuidv4();
     const role = req.body.role
+    const address = req.body.address
+    const zipcode = req.body.zipcode
+    const city = req.body.city
+    const country = req.body.country
 
     const errors = [];
 
-    if (!name) {
+    if (!firstName) {
+        errors.push("Please enter a name");
+    }
+    if (!lastName) {
         errors.push("Please enter a name");
     }
     if (!email) {
@@ -31,7 +38,19 @@ router.post("/register", async (req, res) => {
     if (!number) {
         errors.push("Please enter a password");
     }
-    if(number.length !== 10){
+    if (!address) {
+        errors.push("Please enter a password");
+    }
+    if (!zipcode) {
+        errors.push("Please enter a password");
+    }
+    if (!city) {
+        errors.push("Please enter a password");
+    }
+    if (!country) {
+        errors.push("Please enter a password");
+    }
+    if (number.length !== 10) {
         errors.push("Number should be 10 digits long");
     }
     if (!password) {
@@ -50,12 +69,17 @@ router.post("/register", async (req, res) => {
         try {
             const hashedPassword = await bcrypt.hash(password, 8);
             const user = new User({
-                name,
+                firstName,
+                lastName,
                 email,
                 number,
                 hashedPassword,
                 token,
                 role,
+                address,
+                zipcode,
+                city,
+                country,
             });
             const savedUser = await user.save();
 
@@ -91,10 +115,10 @@ router.get("/login", async (req, res) => {
     if (!password) {
         errors.push("Please provide the password");
     }
-    if(!validator.isEmail(email)){
+    if (!validator.isEmail(email)) {
         errors.push("Please enter a valid email");
     }
-    if(sessionStorage){
+    if (sessionStorage) {
         errors.push("You are already logged in");
     }
 
@@ -115,14 +139,14 @@ router.get("/login", async (req, res) => {
             errors.push("Wrong password");
             res.status(400).json({ errors });
             return;
-        }else if(user.verification_status === 'unverified'){
+        } else if (user.verification_status === 'unverified') {
             errors.push("You still need to be verified");
-            res.status(400).json({errors});
+            res.status(400).json({ errors });
             return;
         }
         else {
             const userData = user;
-            req.session.userInfo = {userToken: user.token, userEmail: user.email};
+            req.session.userInfo = { userToken: user.token, userEmail: user.email };
             res.status(201).send({ userData, message: "Logged in" });
         }
     }
@@ -132,12 +156,12 @@ router.get("/login", async (req, res) => {
 
 
 // logout api
-router.get("/logout", (req,res)=>{
-    req.session.destroy((err)=>{
-        if(err){
-            res.status(401).json({err})
-        }else{
-            res.status(200).send({message:"Successfully logged out"});
+router.get("/logout", (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            res.status(401).json({ err })
+        } else {
+            res.status(200).send({ message: "Successfully logged out" });
         }
     })
 })
@@ -145,12 +169,12 @@ router.get("/logout", (req,res)=>{
 
 
 // api to print sessions
-router.get("/getsession", (req, res)=>{
+router.get("/getsession", (req, res) => {
     const user = req.session.userInfo;
-    if(user){
+    if (user) {
         console.log(user);
-    }else{
-        res.status(200).json({message:"No session"});
+    } else {
+        res.status(200).json({ message: "No session" });
     }
 })
 // ends here
