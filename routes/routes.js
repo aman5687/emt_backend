@@ -180,7 +180,64 @@ router.get("/getsession", (req, res) => {
 // ends here
 
 
+// =================================================Admin Module=========================================
 
+// api to show verified employees
+router.get("/unverifiedEmployees", (req, res) => {
+    User.find({ verification_status: "unverified" })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
+})
+// ends here
+
+// api to show verified employees
+router.get("/verifiedEmployees", (req, res) => {
+    User.find({
+        verification_status: "verified",
+        role: { $ne: "admin" }
+    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
+})
+// ends here
+
+// api to verify employee
+router.post("/verifyEmployee/:token", async (req, res) => {
+    try {
+        const token = req.params.token;
+        const updated_verification_status = req.body.updated_verification_status
+        const updatedRole = req.body.updatedRole
+
+        const verifyEmployee = await User.findOneAndUpdate(
+            { token },
+            {
+                verification_status: updated_verification_status,
+                role: updatedRole
+            },
+            { new: true }
+        );
+
+        if (!verifyEmployee) {
+            res.status(401).json({ message: "Not updated" });
+        } else {
+            res.status(200).json({ verifyEmployee });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ error });
+    }
+})
+// ends here
 
 
 
