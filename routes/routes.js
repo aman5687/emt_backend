@@ -45,12 +45,13 @@ router.post("/register", upload.single("image"), async (req, res) => {
     const zipcode = req.body.zipcode
     const city = req.body.city
     const country = req.body.country
+    const image = req.file.path
 
     const errors = [];
 
 
 
-    const cloudinaryUploadResult = await cloudinary.uploader.upload(req.file.path, {folder: "emt_profile_image"}, function (err, result){
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(image, {folder: "emt_profile_image"}, function (err, result){
         if(err){
             res.status(401).json({err})
         }
