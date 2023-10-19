@@ -51,9 +51,9 @@ router.post("/register", upload.single("image"), async (req, res) => {
 
 
 
-    const cloudinaryUploadResult = await cloudinary.uploader.upload(image, {folder: "emt_profile_image"}, function (err, result){
-        if(err){
-            res.status(401).json({err})
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(image, { folder: "emt_profile_image" }, function (err, result) {
+        if (err) {
+            res.status(401).json({ err })
         }
     })
 
@@ -209,6 +209,7 @@ router.get("/logout", (req, res) => {
 // ends
 
 
+
 // api to print sessions
 router.get("/getsession", (req, res) => {
     const user = req.session.userInfo;
@@ -235,6 +236,8 @@ router.get("/unverifiedEmployees", (req, res) => {
         })
 })
 // ends here
+
+
 
 // api to show verified employees
 router.get("/verifiedEmployees", (req, res) => {
@@ -282,10 +285,24 @@ router.post("/verifyEmployee/:token", async (req, res) => {
 
 
 
-// 
+// delete api to delete unverified users
 
+router.get("/unverifiedUserDelete/:token", async (req, res) => {
+    try {
+        const token = req.params.token;
 
+        const deleteUser = await User.findOneAndDelete({ token });
 
+        if (deleteUser) {
+            res.status(200).json({ message: "User has been deleted" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ error });
+    }
+})
+
+// ends here
 
 
 
