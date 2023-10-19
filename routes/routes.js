@@ -6,7 +6,7 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const cloudinary = require("cloudinary");
+const cloudinary = require("cloudinary").v2;
 
 
 // Configure multer for image upload
@@ -278,6 +278,10 @@ router.post("/verifyEmployee/:token", async (req, res) => {
     }
 })
 // ends here
+
+
+
+// 
 
 
 
