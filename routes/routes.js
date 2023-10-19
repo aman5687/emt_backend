@@ -6,11 +6,32 @@ const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("cloudinary");
+
+
+// Configure multer for image upload
+const storage = multer.diskStorage({
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+
+const upload = multer({ storage: storage });
+
+
+// cloudinary config
+cloudinary.config({
+    cloud_name: 'djrh8oflc',
+    api_key: '544113442678141',
+    api_secret: 'G6AKEYGFz2eiEcVHXg-4myu5cXg'
+});
+
+
 
 
 
 // registration api starts
-router.post("/register", async (req, res) => {
+router.post("/register", upload.single("image"), async (req, res) => {
 
     const firstName = req.body.firstName
     const lastName = req.body.lastName
@@ -19,6 +40,7 @@ router.post("/register", async (req, res) => {
     const password = req.body.password
     const token = uuidv4();
     const role = req.body.role
+    const department = req.body.department
     const address = req.body.address
     const zipcode = req.body.zipcode
     const city = req.body.city
@@ -26,35 +48,51 @@ router.post("/register", async (req, res) => {
 
     const errors = [];
 
+
+
+    const cloudinaryUploadResult = await cloudinary.uploader.upload(req.file.path, {folder: "emt_profile_image"}, function (err, result){
+        if(err){
+            res.status(401).json({err})
+        }
+    })
+
+    const imageUrl = cloudinaryUploadResult.secure_url
+
     if (!firstName) {
-        errors.push("Please enter a name");
+        errors.push("Please enter  your first name");
     }
     if (!lastName) {
-        errors.push("Please enter a name");
+        errors.push("Please enter your last name");
     }
     if (!email) {
         errors.push("Please enter an email");
     }
     if (!number) {
-        errors.push("Please enter a password");
+        errors.push("Please enter a number");
     }
     if (!address) {
-        errors.push("Please enter a password");
+        errors.push("Please enter a address");
     }
     if (!zipcode) {
-        errors.push("Please enter a password");
+        errors.push("Please enter a zipcode");
     }
     if (!city) {
-        errors.push("Please enter a password");
+        errors.push("Please enter a city");
     }
     if (!country) {
-        errors.push("Please enter a password");
+        errors.push("Please enter a country");
     }
     if (number.length !== 10) {
         errors.push("Number should be 10 digits long");
     }
     if (!password) {
         errors.push("Please enter a password");
+    }
+    if (!role) {
+        errors.push("Please enter an role");
+    }
+    if (!department) {
+        errors.push("Please enter an department");
     }
     if (!validator.isEmail(email)) {
         errors.push("Please enter a valid email");
@@ -76,10 +114,12 @@ router.post("/register", async (req, res) => {
                 hashedPassword,
                 token,
                 role,
+                department,
                 address,
                 zipcode,
                 city,
                 country,
+                image: imageUrl
             });
             const savedUser = await user.save();
 
