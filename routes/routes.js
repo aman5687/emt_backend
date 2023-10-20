@@ -306,5 +306,34 @@ router.get("/unverifiedUserDelete/:token", async (req, res) => {
 
 
 
+// api to edit uverified employees before verifying
+router.post("/editUnverifiedEmployee/:token", async (req, res) => {
+    try {
+        const token = req.params.token;
+        const updateDepartment = req.body.updateDepartment;
+        const updateRole = req.body.updateRole;
+
+        const editUnverifiedEmployee =  await User.findOneAndUpdate(
+            { token },
+            {
+                department: updateDepartment,
+                role: updateRole
+            },
+            { new: true }
+        );
+
+        if (!editUnverifiedEmployee) {
+            res.status(401).json({ message: "User has not been updated" })
+        } else {
+            res.status(200).json({ editUnverifiedEmployee });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ error });
+    }
+})
+
+// ends here
+
 
 module.exports = router;
