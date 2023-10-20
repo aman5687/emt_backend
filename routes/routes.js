@@ -304,7 +304,22 @@ router.get("/unverifiedUserDelete/:token", async (req, res) => {
 
 // ends here
 
+// api to get unverified users data for role and dept
 
+router.get("/getUnverifiedEmployee/:token", async (req, res) => {
+    const token = req.params.token;
+
+    const unverifiedEmployeesget = await User.findOne({ token });
+
+    if (!unverifiedEmployeesget) {
+        res.status(401).json({ message: "No user found" });
+    } else {
+        res.status(200).json({ unverifiedEmployeesget });
+    }
+})
+
+
+// ends here
 
 // api to edit uverified employees before verifying
 router.post("/editUnverifiedEmployee/:token", async (req, res) => {
@@ -313,7 +328,7 @@ router.post("/editUnverifiedEmployee/:token", async (req, res) => {
         const updateDepartment = req.body.updateDepartment;
         const updateRole = req.body.updateRole;
 
-        const editUnverifiedEmployee =  await User.findOneAndUpdate(
+        const editUnverifiedEmployee = await User.findOneAndUpdate(
             { token },
             {
                 department: updateDepartment,
@@ -332,7 +347,6 @@ router.post("/editUnverifiedEmployee/:token", async (req, res) => {
         res.status(401).json({ error });
     }
 })
-
 // ends here
 
 
