@@ -1,6 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/users");
+const FullStack = require("../models/fullstack");
+const SEO = require("../models/seo");
+const ML = require("../models/ML");
+const BackendDeveloper = require("../models/backendDeveloper");
+const FrontDeveloper = require("../models/frontendDeveloper");
+const Marketing = require("../models/marketing");
+const Python = require("../models/python");
 const multer = require("multer");
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
@@ -262,6 +269,9 @@ router.post("/verifyEmployee/:token", async (req, res) => {
         const updated_verification_status = req.body.updated_verification_status
         const updatedRole = req.body.updatedRole
 
+        const entryInDepartment = await User.findOne({ token })
+        const department = entryInDepartment.department;
+
         const verifyEmployee = await User.findOneAndUpdate(
             { token },
             {
@@ -274,7 +284,143 @@ router.post("/verifyEmployee/:token", async (req, res) => {
         if (!verifyEmployee) {
             res.status(401).json({ message: "Not updated" });
         } else {
-            res.status(200).json({ verifyEmployee });
+            if (department === "Frontend Developer" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new FrontDeveloper({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Frontend Developer department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "Backend Developer" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new BackendDeveloper({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Backend Developer department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "Marketing" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new Marketing({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Marketing department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "SEO" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new SEO({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the SEO department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "Python Django" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new Python({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Python Django department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "Full Stack Developer" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new FullStack({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Full Stack Developer department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            } else if (department === "Machine Learning" && verifyEmployee.verification_status === "verified") {
+                const departmentEntry = new ML({
+                    firstName: entryInDepartment.firstName,
+                    lastName: entryInDepartment.lastName,
+                    email: entryInDepartment.email,
+                    role: entryInDepartment.role,
+                    token: entryInDepartment.token
+                })
+                try {
+                    const saveDepartmentEntry = await departmentEntry.save();
+                    if (saveDepartmentEntry) {
+                        res.status(200).json({ message: "User added to the Machine Learning department" });
+                    } else {
+                        res.status(401).json({ message: "User not saved in the department" });
+                    }
+                } catch (error) {
+                    console.error(error);
+                    res.status(500).json({ message: "Internal Server Error" });
+                }
+            }else{
+                res.status(401).json({message:"User role has been updated but he is still unverified"});
+            }
         }
     } catch (error) {
         console.log(error);
