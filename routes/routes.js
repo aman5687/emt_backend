@@ -496,4 +496,83 @@ router.post("/editUnverifiedEmployee/:token", async (req, res) => {
 // ends here
 
 
+
+// api to fetch departments
+router.get("/getML", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getSEO", (req, res)=>{
+    SEO.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getbackendDeveloper", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getfrontendDeveloper", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getfullStack", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getMarketing", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
+router.get("/getPython", (req, res)=>{
+    ML.find()
+    .exec()
+    .then((data)=>{
+        res.status(200).json({data});
+    })
+    .catch((error)=>{
+        res.status(401).json({error});
+    })
+})
+
 module.exports = router;
