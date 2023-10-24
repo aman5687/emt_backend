@@ -521,7 +521,7 @@ router.get("/getSEO", (req, res)=>{
 })
 
 router.get("/getbackendDeveloper", (req, res)=>{
-    ML.find()
+    BackendDeveloper.find()
     .exec()
     .then((data)=>{
         res.status(200).json({data});
@@ -532,7 +532,7 @@ router.get("/getbackendDeveloper", (req, res)=>{
 })
 
 router.get("/getfrontendDeveloper", (req, res)=>{
-    ML.find()
+    FrontDeveloper.find()
     .exec()
     .then((data)=>{
         res.status(200).json({data});
@@ -543,7 +543,7 @@ router.get("/getfrontendDeveloper", (req, res)=>{
 })
 
 router.get("/getfullStack", (req, res)=>{
-    ML.find()
+    FullStack.find()
     .exec()
     .then((data)=>{
         res.status(200).json({data});
@@ -554,7 +554,7 @@ router.get("/getfullStack", (req, res)=>{
 })
 
 router.get("/getMarketing", (req, res)=>{
-    ML.find()
+    Marketing.find()
     .exec()
     .then((data)=>{
         res.status(200).json({data});
@@ -565,7 +565,7 @@ router.get("/getMarketing", (req, res)=>{
 })
 
 router.get("/getPython", (req, res)=>{
-    ML.find()
+    Python.find()
     .exec()
     .then((data)=>{
         res.status(200).json({data});
