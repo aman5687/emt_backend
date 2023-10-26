@@ -32,7 +32,6 @@ const userSchema = new mongoose.Schema({
     },
     department:{
         type:String,
-        required:true,
     },
     address:{
         type:String,

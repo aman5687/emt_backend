@@ -99,9 +99,6 @@ router.post("/register", upload.single("image"), async (req, res) => {
     if (!role) {
         errors.push("Please enter an role");
     }
-    if (!department) {
-        errors.push("Please enter an department");
-    }
     if (!validator.isEmail(email)) {
         errors.push("Please enter a valid email");
     }
@@ -418,8 +415,8 @@ router.post("/verifyEmployee/:token", async (req, res) => {
                     console.error(error);
                     res.status(500).json({ message: "Internal Server Error" });
                 }
-            }else{
-                res.status(401).json({message:"User role has been updated but he is still unverified"});
+            } else {
+                res.status(401).json({ message: "User role has been updated but he is still unverified" });
             }
         }
     } catch (error) {
@@ -498,81 +495,208 @@ router.post("/editUnverifiedEmployee/:token", async (req, res) => {
 
 
 // api to fetch departments
-router.get("/getML", (req, res)=>{
+router.get("/getML", (req, res) => {
     ML.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getSEO", (req, res)=>{
+router.get("/getSEO", (req, res) => {
     SEO.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getbackendDeveloper", (req, res)=>{
+router.get("/getbackendDeveloper", (req, res) => {
     BackendDeveloper.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getfrontendDeveloper", (req, res)=>{
+router.get("/getfrontendDeveloper", (req, res) => {
     FrontDeveloper.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getfullStack", (req, res)=>{
+router.get("/getfullStack", (req, res) => {
     FullStack.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getMarketing", (req, res)=>{
+router.get("/getMarketing", (req, res) => {
     Marketing.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
 
-router.get("/getPython", (req, res)=>{
+router.get("/getPython", (req, res) => {
     Python.find()
-    .exec()
-    .then((data)=>{
-        res.status(200).json({data});
-    })
-    .catch((error)=>{
-        res.status(401).json({error});
-    })
+        .exec()
+        .then((data) => {
+            res.status(200).json({ data });
+        })
+        .catch((error) => {
+            res.status(401).json({ error });
+        })
 })
+
+// ends here
+
+
+// api to unverify employee from verified page
+
+router.post("/unverifyEmployee/:token", async (req, res) => {
+    const token = req.params.token;
+    const updated_verification_status = req.body.updated_verification_status;
+
+    const user = await User.findOne({ token });
+    const role = user.role;
+    const department = user.department;
+    if (role === "HR") {
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        if(verification_statusForHR){
+            return res.status(200).json({message:"HR has been unverified"});
+        }else{
+            return res.status(400).json({message:"HR has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Frontend Developer"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await FrontDeveloper.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Backend Developer"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await BackendDeveloper.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Marketing"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await Marketing.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Machine Learning"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await ML.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Python Django"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await Python.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "Full Stack Developer"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await FullStack.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }else if(role !== "HR" && department === "SEO"){
+        const verification_statusForHR = await User.findOneAndUpdate(
+            { token },
+            { verification_status: updated_verification_status },
+            { new: true }
+        )
+
+        const deleteFromDepartment = await SEO.findOneAndDelete({token})
+
+        if(verification_statusForHR && deleteFromDepartment){
+            return res.status(200).json({message:"User has been unveriied"});
+        }else{
+            return res.status(400).json({message:"User has not been unverified"});
+        }
+    }
+})
+
+// ends here
 
 module.exports = router;
