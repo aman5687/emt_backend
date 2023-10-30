@@ -14,6 +14,7 @@ const { v4: uuidv4 } = require("uuid");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const cloudinary = require("cloudinary").v2;
+const Task = require("../models/taskModel");
 
 
 // Configure multer for image upload
@@ -591,112 +592,180 @@ router.post("/unverifyEmployee/:token", async (req, res) => {
             { new: true }
         )
 
-        if(verification_statusForHR){
-            return res.status(200).json({message:"HR has been unverified"});
-        }else{
-            return res.status(400).json({message:"HR has not been unverified"});
+        if (verification_statusForHR) {
+            return res.status(200).json({ message: "HR has been unverified" });
+        } else {
+            return res.status(400).json({ message: "HR has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Frontend Developer"){
+    } else if (role !== "HR" && department === "Frontend Developer") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await FrontDeveloper.findOneAndDelete({token})
+        const deleteFromDepartment = await FrontDeveloper.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Backend Developer"){
+    } else if (role !== "HR" && department === "Backend Developer") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await BackendDeveloper.findOneAndDelete({token})
+        const deleteFromDepartment = await BackendDeveloper.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Marketing"){
+    } else if (role !== "HR" && department === "Marketing") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await Marketing.findOneAndDelete({token})
+        const deleteFromDepartment = await Marketing.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Machine Learning"){
+    } else if (role !== "HR" && department === "Machine Learning") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await ML.findOneAndDelete({token})
+        const deleteFromDepartment = await ML.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Python Django"){
+    } else if (role !== "HR" && department === "Python Django") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await Python.findOneAndDelete({token})
+        const deleteFromDepartment = await Python.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "Full Stack Developer"){
+    } else if (role !== "HR" && department === "Full Stack Developer") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await FullStack.findOneAndDelete({token})
+        const deleteFromDepartment = await FullStack.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unveriied" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
-    }else if(role !== "HR" && department === "SEO"){
+    } else if (role !== "HR" && department === "SEO") {
         const verification_statusForHR = await User.findOneAndUpdate(
             { token },
             { verification_status: updated_verification_status },
             { new: true }
         )
 
-        const deleteFromDepartment = await SEO.findOneAndDelete({token})
+        const deleteFromDepartment = await SEO.findOneAndDelete({ token })
 
-        if(verification_statusForHR && deleteFromDepartment){
-            return res.status(200).json({message:"User has been unveriied"});
-        }else{
-            return res.status(400).json({message:"User has not been unverified"});
+        if (verification_statusForHR && deleteFromDepartment) {
+            return res.status(200).json({ message: "User has been unverified" });
+        } else {
+            return res.status(400).json({ message: "User has not been unverified" });
         }
     }
 })
 
 // ends here
+
+
+// ==================================================HR Module============================================
+
+
+// api to fetch all TLs
+router.get("/allTLs", async (req, res) => {
+    try {
+        const allTL = await User.find({ role: "TL" })
+
+        if (allTL) {
+            res.status(200).json({ allTL });
+        } else {
+            res.status(401).json({ message: "No TLs" });
+        }
+    } catch (error) {
+        res.status(401).json({ error });
+    }
+})
+
+// ends here
+
+
+// api to assign tasks to TL by HR
+
+router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) => {
+    try {
+        const TLtoken = req.params.token;
+        const taskMessage = req.body.taskMessage;
+        const taskFile = req.body.taskFile;
+        const taskDeadline = req.body.taskDeadline;
+        const taskToken = uuidv4();
+
+        const errors = [];
+
+        if (!taskMessage) {
+            errors.push("Please write a task message");
+        }
+        if (!taskDeadline) {
+            errors.push("Please assign a task deadline");
+        }
+
+        const saveTask = new Task({
+            taskMessage,
+            taskFile,
+            taskDeadline,
+            taskToken,
+            TLtoken: TLtoken
+        })
+
+        const taskSave = await saveTask.save();
+
+        if (taskSave) {
+            res.status(200).json({ taskSave })
+        } else {
+            res.status(401).json({ message: "Task has not been assigned" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({ error });
+    }
+
+})
+
+
+// ends here
+
+
 
 module.exports = router;
