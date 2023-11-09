@@ -767,5 +767,103 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
 // ends here
 
 
+// =====================================================TL Module===========================================
+
+
+// api to get all employees for TLs
+router.post("/allEmployees", (req, res) => {
+    const department = req.body.department;
+    try {
+        if (department === "Python Django") {
+            Python.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "Machine Learning") {
+            ML.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "SEO") {
+            SEO.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "Frontend Developer") {
+            FrontDeveloper.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "Backend Developer") {
+            BackendDeveloper.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "Full Stack Developer") {
+            FullStack.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }else if (department === "Marketing") {
+            Marketing.find({
+                role: {$ne: "TL"}
+            })
+                .exec()
+                .then((data) => {
+                    res.status(200).json({ data });
+                })
+                .catch((error) => {
+                    res.status(401).json({ error });
+                })
+        }
+    } catch (error) {
+        res.status(401).json({ error });
+    }
+
+})
+
+// ends here
+
+
+
+
+
+
 
 module.exports = router;
