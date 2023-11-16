@@ -10,6 +10,7 @@ const Marketing = require("../models/marketing");
 const Python = require("../models/python");
 const multer = require("multer");
 const fs = require("fs");
+const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
@@ -874,8 +875,15 @@ router.post("/allEmployees", (req, res) => {
 // ends here
 
 
+// api to show all tasks to TL
 
+router.get("/allTasksForTL", async (req, res)=>{
+    const TLtoken = req.body.TLtoken;
 
+    const allTasksForTL = 
+})
+
+// ends here
 
 
 module.exports = router;
