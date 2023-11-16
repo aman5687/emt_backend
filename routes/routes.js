@@ -877,7 +877,7 @@ router.post("/allEmployees", (req, res) => {
 
 // api to show all tasks to TL
 
-router.get("/allTasksForTL", async (req, res)=>{
+router.post("/allTasksForTL", async (req, res)=>{
     const TLtoken = req.body.TLtoken;
 
     const allTasksForTL = await Task.find({TLtoken: TLtoken});
@@ -892,7 +892,12 @@ router.get("/allTasksForTL", async (req, res)=>{
 // ends here
 
 
-// api to 
+// api to assign tasks to employeee
+
+
+
+
+// ends here
 
 
 module.exports = router;
