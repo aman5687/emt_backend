@@ -877,13 +877,22 @@ router.post("/allEmployees", (req, res) => {
 
 // api to show all tasks to TL
 
-// router.get("/allTasksForTL", async (req, res)=>{
-//     const TLtoken = req.body.TLtoken;
+router.get("/allTasksForTL", async (req, res)=>{
+    const TLtoken = req.body.TLtoken;
 
-//     const allTasksForTL = 
-// })
+    const allTasksForTL = await Task.find({TLtoken: TLtoken});
+
+    if(allTasksForTL.length > 0){
+        res.status(200).json({allTasksForTL});
+    }else{
+        res.status(401).json({message:"No tasks for this TL"});
+    }
+})
 
 // ends here
+
+
+// api to 
 
 
 module.exports = router;
