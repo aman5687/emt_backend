@@ -877,24 +877,56 @@ router.post("/allEmployees", (req, res) => {
 
 // api to show all tasks to TL
 
-router.post("/allTasksForTL", async (req, res)=>{
+router.post("/allTasksForTL", async (req, res) => {
     const TLtoken = req.body.TLtoken;
 
-    const allTasksForTL = await Task.find({TLtoken: TLtoken});
+    const allTasksForTL = await Task.find({ TLtoken: TLtoken });
 
-    if(allTasksForTL.length > 0){
-        res.status(200).json({allTasksForTL});
-    }else{
-        res.status(401).json({message:"No tasks for this TL"});
+    if (allTasksForTL.length > 0) {
+        res.status(200).json({ allTasksForTL });
+    } else {
+        res.status(401).json({ message: "No tasks for this TL" });
     }
 })
 
 // ends here
 
 
-// api to assign tasks to employeee
+// api to assign tasks to employee
+
+router.post("/assignTasksToEmployees/:taskToken", async (req, res) => {
+    const taskToken = req.params.taskToken;
+    const empMessage = req.body.empMessage;
+    const empDeadline = req.body.empDeadline;
+    const empToken = req.body.empToken;
 
 
+    const task = await Task.findOneAndUpdate(
+        { taskToken: taskToken },
+        {
+            empToken: empToken,
+            empDeadline: empDeadline,
+            empMessage: empMessage,
+        },
+        { new: true }
+    );
+
+    if(task){
+        res.status(200).json({task, message:"Task has been assigned to the employee"});
+    }else{
+        res.status(401).json({message:"Task has not been assigned to the employee"});
+    }
+})
+
+// api to show tasks assigned to each employee
+
+// router.post("/tasksOfEachEmployee", async (req, res)=>{
+//     const empToken = req.params.empToken;
+    
+// })
+
+
+// ends here
 
 
 // ends here

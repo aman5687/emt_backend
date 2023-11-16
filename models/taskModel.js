@@ -11,6 +11,14 @@ const taskSchema = new mongoose.Schema({
         type:Date,
         default:Date.now(),
     },
+    TLtoken:{
+        type:String,
+        required:true,
+    },
+    taskToken:{
+        type:String,
+        required:true,
+    },
     empToken:{
         type:String,
         default:null
@@ -19,13 +27,13 @@ const taskSchema = new mongoose.Schema({
         type:String,
         default:"no",
     },
-    taskToken:{
-        type:String,
-        required:true,
+    empDeadline:{
+        type:Date,
+        default:null,
     },
-    TLtoken:{
+    empMessage:{
         type:String,
-        required:true,
+        default:null,
     },
 })
 
