@@ -877,11 +877,11 @@ router.post("/allEmployees", (req, res) => {
 
 // api to show all tasks to TL
 
-router.get("/allTasksForTL", async (req, res)=>{
-    const TLtoken = req.body.TLtoken;
+// router.get("/allTasksForTL", async (req, res)=>{
+//     const TLtoken = req.body.TLtoken;
 
-    const allTasksForTL = 
-})
+//     const allTasksForTL = 
+// })
 
 // ends here
 
