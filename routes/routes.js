@@ -728,11 +728,20 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
     try {
         const TLtoken = req.params.token;
         const taskMessage = req.body.taskMessage;
-        const taskFile = req.body.taskFile;
+        const file = req.file.path; // Use req.file directly
         const taskDeadline = req.body.taskDeadline;
         const taskToken = uuidv4();
 
         const errors = [];
+
+        const cloudinaryUpload = await cloudinary.uploader.upload(file, { folder: "emtTasks", resource_type: 'raw' }, (error, result) => {
+            if (error) { // Use error instead of err
+                errors.push(error);
+                res.status(401).json({ errors });
+            }
+        });
+
+        const pdfResult = cloudinaryUpload.secure_url;
 
         if (!taskMessage) {
             errors.push("Please write a task message");
@@ -741,27 +750,31 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
             errors.push("Please assign a task deadline");
         }
 
+        if (errors.length > 0) {
+            res.status(400).json({ errors });
+            return; // Added to avoid further execution in case of errors
+        }
+
         const saveTask = new Task({
             taskMessage,
-            taskFile,
+            taskFile: pdfResult,
             taskDeadline,
             taskToken,
             TLtoken: TLtoken
-        })
+        });
 
         const taskSave = await saveTask.save();
 
         if (taskSave) {
-            res.status(200).json({ taskSave })
+            res.status(200).json({ taskSave });
         } else {
             res.status(401).json({ message: "Task has not been assigned" });
         }
     } catch (error) {
         console.log(error);
-        res.status(401).json({ error });
+        res.status(500).json({ error: "Internal Server Error" });
     }
-
-})
+});
 
 
 // ends here
@@ -776,7 +789,7 @@ router.post("/allEmployees", (req, res) => {
     try {
         if (department === "Python Django") {
             Python.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -785,9 +798,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "Machine Learning") {
+        } else if (department === "Machine Learning") {
             ML.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -796,9 +809,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "SEO") {
+        } else if (department === "SEO") {
             SEO.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -807,9 +820,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "Frontend Developer") {
+        } else if (department === "Frontend Developer") {
             FrontDeveloper.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -818,9 +831,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "Backend Developer") {
+        } else if (department === "Backend Developer") {
             BackendDeveloper.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -829,9 +842,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "Full Stack Developer") {
+        } else if (department === "Full Stack Developer") {
             FullStack.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -840,9 +853,9 @@ router.post("/allEmployees", (req, res) => {
                 .catch((error) => {
                     res.status(401).json({ error });
                 })
-        }else if (department === "Marketing") {
+        } else if (department === "Marketing") {
             Marketing.find({
-                role: {$ne: "TL"}
+                role: { $ne: "TL" }
             })
                 .exec()
                 .then((data) => {
@@ -859,7 +872,6 @@ router.post("/allEmployees", (req, res) => {
 })
 
 // ends here
-
 
 
 

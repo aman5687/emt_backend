@@ -11,6 +11,14 @@ const taskSchema = new mongoose.Schema({
         type:Date,
         default:Date.now(),
     },
+    empToken:{
+        type:String,
+        default:null
+    },
+    done:{
+        type:String,
+        default:"no",
+    },
     taskToken:{
         type:String,
         required:true,
