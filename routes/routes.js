@@ -948,8 +948,15 @@ router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
         }
     );
 
+    employeeTokens = assignedTasks.map(token => token.empToken)
+    console.log(employeeTokens);
+    const empNames = await Promise.all(employeeTokens.map(async(token)=>{
+        const emp = await User.find({token:token});
+        return {empNames: emp};
+    }))
+
     if(assignedTasks){
-        res.status(200).json({assignedTasks});
+        res.status(200).json({assignedTasks, empNames});
     }else{
         res.status(401).json({message:"No tasks have assigned to anyone"});
     }
@@ -957,5 +964,22 @@ router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
 
 // ends here
 
+// ==================================================EMployeee Module========================================
+
+// api to show all tasks to user
+
+router.post("/getTasksToEmployees", async (req,res)=>{
+    const empToken = req.body.empToken;
+
+    const empTasks = await Task.find({empToken: empToken});
+
+    if(empTasks){
+        res.status(200).json({empTasks});
+    }else{
+        res.status(400).json({message:"No tasks has been assigned yet"});
+    }
+})
+
+// ends here
 
 module.exports = router;
