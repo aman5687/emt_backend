@@ -230,7 +230,7 @@ router.get("/getsession", (req, res) => {
 
 // =================================================Admin Module=========================================
 
-// api to show verified employees
+// api to show unverified employees
 router.get("/unverifiedEmployees", (req, res) => {
     User.find({ verification_status: "unverified" })
         .exec()
@@ -920,14 +920,40 @@ router.post("/assignTasksToEmployees/:taskToken", async (req, res) => {
 
 // api to show tasks assigned to each employee
 
-// router.post("/tasksOfEachEmployee", async (req, res)=>{
-//     const empToken = req.params.empToken;
+router.get("/tasksOfEachEmployee/:empToken", async (req, res)=>{
+    const empToken = req.params.empToken;
     
-// })
+    const allTasksofEmployees = await Task.find({empToken: empToken});
+
+    if(allTasksofEmployees){
+        res.status(200).json({allTasksofEmployees});
+    }else{
+        res.status(401).json({message:"No tasks for this employee"});
+    }
+})
 
 
 // ends here
 
+
+// api to show assigned tasks
+
+router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
+    const TLtoken = req.params.TLtoken;
+    const assignedTasks = await Task.find(
+        {
+            TLtoken: TLtoken,
+            empToken: {$ne: null},
+            done: "no"
+        }
+    );
+
+    if(assignedTasks){
+        res.status(200).json({assignedTasks});
+    }else{
+        res.status(401).json({message:"No tasks have assigned to anyone"});
+    }
+})
 
 // ends here
 
