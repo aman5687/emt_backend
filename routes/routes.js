@@ -949,11 +949,17 @@ router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
     );
 
     employeeTokens = assignedTasks.map(token => token.empToken)
-    console.log(employeeTokens);
-    const empNames = await Promise.all(employeeTokens.map(async(token)=>{
+    const empNamesArray = await Promise.all(employeeTokens.map(async(token)=>{
         const emp = await User.find({token:token});
-        return {empNames: emp};
+        return emp.map((employee) => {
+            return {
+              firstName: employee.firstName,
+              lastName: employee.lastName,
+            };
+          });
     }))
+
+    const empNames = empNamesArray.flat();
 
     if(assignedTasks){
         res.status(200).json({assignedTasks, empNames});
@@ -979,6 +985,13 @@ router.post("/getTasksToEmployees", async (req,res)=>{
         res.status(400).json({message:"No tasks has been assigned yet"});
     }
 })
+
+// ends here
+
+
+// api to send completed task of employee back to TL
+
+
 
 // ends here
 
