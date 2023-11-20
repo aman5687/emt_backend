@@ -973,7 +973,7 @@ router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
 // api to show all received tasks to TL
 
 
-router.get("/allReceivedTasks", async (req, res)=>{
+router.post("/allReceivedTasks", async (req, res)=>{
     const TLtoken = req.body.TLtoken;
 
     const allReceivedTasks = await Task.find(
@@ -983,8 +983,22 @@ router.get("/allReceivedTasks", async (req, res)=>{
         }
     )
 
+    const empNamesToken = allReceivedTasks.map(token=> token.empToken);
+
+    const empNamesArray = await Promise.all(empNamesToken.map(async(token)=>{
+        const emp = await User.find({token:token});
+        return emp.map((employee) => {
+            return {
+              firstName: employee.firstName,
+              lastName: employee.lastName,
+            };
+          });
+    }))
+
+    const empNames = empNamesArray.flat();
+
     if(allReceivedTasks.length > 0){
-        res.status(200).json({allReceivedTasks});
+        res.status(200).json({allReceivedTasks, empNames});
     }else{
         res.status(401).json({message: "No completed tasks"});
     }
