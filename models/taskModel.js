@@ -35,6 +35,14 @@ const taskSchema = new mongoose.Schema({
         type:String,
         default:null,
     },
+    completedFile:{
+        type:String,
+        default:null,
+    },
+    messageByEmployee:{
+        type:String,
+        default:null,
+    },
 })
 
 module.exports = new mongoose.model("task", taskSchema);

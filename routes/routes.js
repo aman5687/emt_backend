@@ -991,7 +991,39 @@ router.post("/getTasksToEmployees", async (req,res)=>{
 
 // api to send completed task of employee back to TL
 
+router.post("/completedTaskofEmployees/:taskToken", upload.single("file"), async (req, res)=>{
+    const taskToken = req.params.taskToken;
+    const file = req.file.path;
+    const empMessage = req.body.empMessage;
 
+    const errors = [];
+
+    const cloudinaryUpload = await cloudinary.uploader.upload(file, { folder: "tasksCompletedByEmployee", resource_type: 'raw' }, (error, result) => {
+        if (error) { // Use error instead of err
+            errors.push(error);
+            res.status(401).json({ errors });
+        }
+    });
+
+    const pdfResult = cloudinaryUpload.secure_url;
+
+
+    const completedFile = await Task.findOneAndUpdate(
+        {taskToken:taskToken},
+        {
+            completedFile: pdfResult,
+            messageByEmployee:empMessage,
+            done:"yes"
+        },
+        {new:true}
+    )
+
+    if(completedFile){
+        res.status(200).json({completedFile});
+    }else{
+        res.status(401).json({message:"Task has not been sent to TL"});
+    }
+})
 
 // ends here
 
