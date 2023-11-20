@@ -43,6 +43,14 @@ const taskSchema = new mongoose.Schema({
         type:String,
         default:null,
     },
+    revertMessage:{
+        type:String,
+        default:null,
+    },
+    completedByTL:{
+        type:String,
+        default:null,
+    },
 })
 
 module.exports = new mongoose.model("task", taskSchema);

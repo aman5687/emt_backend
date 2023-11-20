@@ -970,14 +970,94 @@ router.get("/assignedTasksOfTL/:TLtoken", async (req, res)=>{
 
 // ends here
 
-// ==================================================EMployeee Module========================================
+// api to show all received tasks to TL
 
-// api to show all tasks to user
+
+router.get("/allReceivedTasks", async (req, res)=>{
+    const TLtoken = req.body.TLtoken;
+
+    const allReceivedTasks = await Task.find(
+        {
+            TLtoken: TLtoken,
+            done: {$ne: "no"}
+        }
+    )
+
+    if(allReceivedTasks.length > 0){
+        res.status(200).json({allReceivedTasks});
+    }else{
+        res.status(401).json({message: "No completed tasks"});
+    }
+})
+
+// ends here
+
+
+// api to revert the task back to the employee
+
+router.post("/revertToEmployee/:taskToken", async (req, res)=>{
+    const taskToken = req.params.taskToken;
+    const revertMessage = req.body.revertMessage;
+
+    const revertTask = await Task.findOneAndUpdate(
+        {taskToken: taskToken},
+        {
+            revertMessage: revertMessage,
+            done: "no"
+        },
+        {new:true}
+    )
+
+    if(revertTask){
+        res.status(200).json({revertTask});
+    }else{
+        res.status(401).json({message: "Task has not been reverted to employee"});
+    }
+})
+
+// ends here
+
+
+// api to mark the complete task of employee
+
+router.post("/markingCompleteTaskByTL/:taskToken", async (req, res)=>{
+    const taskToken = req.params.taskToken;
+
+    const completedTask = await Task.findOneAndUpdate(
+        {taskToken: taskToken},
+        {
+            empToken: null,
+            done: "yes",
+            empDeadline: null,
+            empMessage: null,
+            revertMessage: null,
+            completedByTL: "yes"
+        },
+        {new:true}
+    )
+
+    if(completedTask){
+        res.status(200).json({completedTask});
+    }else{
+        res.status(401).json({message:"Task has not been marked as completed"});
+    }
+})
+
+// ends here
+
+// ==================================================Employeee Module========================================
+
+// api to show all tasks to employee
 
 router.post("/getTasksToEmployees", async (req,res)=>{
     const empToken = req.body.empToken;
 
-    const empTasks = await Task.find({empToken: empToken});
+    const empTasks = await Task.find(
+        {
+            empToken: empToken,
+            done: {$ne: "yes"}
+        }
+        );
 
     if(empTasks){
         res.status(200).json({empTasks});
@@ -1026,5 +1106,8 @@ router.post("/completedTaskofEmployees/:taskToken", upload.single("file"), async
 })
 
 // ends here
+
+
+
 
 module.exports = router;
