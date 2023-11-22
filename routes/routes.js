@@ -790,7 +790,7 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
 
 // api to mark complete of task by HR
 
-router.get("/markingCompleteTaskByHR/:taskToken", async (req, res)=>{
+router.post("/markingCompleteTaskByHR/:taskToken", async (req, res)=>{
     const taskToken = req.params.taskToken;
 
     const completedTask = await Task.findOneAndUpdate(
@@ -954,7 +954,6 @@ router.post("/allTasksForTL", async (req, res) => {
     const allTasksForTL = await Task.find(
     {
         TLtoken: TLtoken,
-        completedByTL: {$ne: "yes"}
     }
     );
 
