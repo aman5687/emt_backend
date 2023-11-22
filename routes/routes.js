@@ -781,6 +781,35 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
 // ends here
 
 
+// api to show completed tasks to TL
+
+router.get("/allCompletedTasks", async (req, res)=>{
+    const completedTasks = await Task.find({completedByTL: "yes"});
+
+    const TLtoken = completedTasks.map((tokens)=> tokens.TLtoken)
+
+    const TLnamesArray = await Promise.all(TLtoken.map(async(token)=>{
+        const TL = await User.find({token:token});
+        return TL.map((TLname)=>{
+            TLname.firstName,
+            TLname.lastName
+        });
+    }));
+
+    const TLnames = TLnamesArray.flat();
+
+    if(completedTasks.length > 0){
+        res.status(200).json({completedTasks, TLnames})
+    }else{
+        res.status(401).json({message:"No completed tasks"});
+    }
+
+})
+
+
+// ends here
+
+
 // =====================================================TL Module===========================================
 
 
@@ -880,7 +909,12 @@ router.post("/allEmployees", (req, res) => {
 router.post("/allTasksForTL", async (req, res) => {
     const TLtoken = req.body.TLtoken;
 
-    const allTasksForTL = await Task.find({ TLtoken: TLtoken });
+    const allTasksForTL = await Task.find(
+    {
+        TLtoken: TLtoken,
+        completedByTL: {$ne: "yes"}
+    }
+    );
 
     if (allTasksForTL.length > 0) {
         res.status(200).json({ allTasksForTL });
@@ -1056,6 +1090,32 @@ router.post("/markingCompleteTaskByTL/:taskToken", async (req, res)=>{
         res.status(401).json({message:"Task has not been marked as completed"});
     }
 })
+
+// ends here
+
+// api to delete tasks for the employees
+
+router.get("/deleteTasksbyTL/:taskToken", async(req, res)=>{
+    const taskToken = req.params.taskToken;
+
+    const deleteTask = await Task.findOneAndUpdate(
+        {taskToken: taskToken},
+        {
+            empToken: null,
+            done: "no",
+            empDeadline: null,
+            empMessage: null,
+        },
+        {new:true}
+    );
+
+    if(deleteTask){
+        res.status(200).json({deleteTask});
+    }else{
+        res.status(401).json({message:"Task has not been deleted"});
+    }
+})
+
 
 // ends here
 
