@@ -708,7 +708,12 @@ router.post("/unverifyEmployee/:token", async (req, res) => {
 // api to fetch all TLs
 router.get("/allTLs", async (req, res) => {
     try {
-        const allTL = await User.find({ role: "TL" })
+        const allTL = await User.find(
+        { 
+            role: "TL", 
+            verification_status: {$ne: "unverified"}
+        }
+        )
 
         if (allTL) {
             res.status(200).json({ allTL });
@@ -743,6 +748,7 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
         });
 
         const pdfResult = cloudinaryUpload.secure_url;
+        const publicIDHR = cloudinaryUpload.public_id
 
         if (!taskMessage) {
             errors.push("Please write a task message");
@@ -761,6 +767,7 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
             taskFile: pdfResult,
             taskDeadline,
             taskToken,
+            taskPublicIDHR:publicIDHR,
             TLtoken: TLtoken
         });
 
@@ -781,6 +788,39 @@ router.post("/assignTaskstoTL/:token", upload.single("file"), async (req, res) =
 // ends here
 
 
+// api to mark complete of task by HR
+
+router.get("/markingCompleteTaskByHR/:taskToken", async (req, res)=>{
+    const taskToken = req.params.taskToken;
+
+    const completedTask = await Task.findOneAndUpdate(
+        {taskToken: taskToken},
+        {
+            TLtoken: null,
+            done: "yes",
+            completedByTL: "yes"
+        },
+        {new:true}
+    )
+
+    const HRpublicID = completedTask.publicIDHR
+    const empPublicID = completedTask.empPublicID
+
+    if (HRpublicID) {
+        await cloudinary.uploader.destroy(HRpublicID);
+    }
+    if (empPublicID) {
+        await cloudinary.uploader.destroy(empPublicID);
+    }
+
+    if(completedTask){
+        res.status(200).json({completedTask});
+    }else{
+        res.status(401).json({message:"Task has not been marked as completed"});
+    }
+})
+// ends here
+
 // api to show completed tasks to TL
 
 router.get("/allCompletedTasks", async (req, res)=>{
@@ -790,11 +830,13 @@ router.get("/allCompletedTasks", async (req, res)=>{
 
     const TLnamesArray = await Promise.all(TLtoken.map(async(token)=>{
         const TL = await User.find({token:token});
-        return TL.map((TLname)=>{
-            TLname.firstName,
-            TLname.lastName
-        });
-    }));
+        return TL.map((TLname) => {
+            return {
+              firstName: TLname.firstName,
+              lastName: TLname.lastName,
+            };
+          });
+    }))
 
     const TLnames = TLnamesArray.flat();
 
@@ -1160,6 +1202,7 @@ router.post("/completedTaskofEmployees/:taskToken", upload.single("file"), async
     });
 
     const pdfResult = cloudinaryUpload.secure_url;
+    const public_idEmployee = cloudinaryUpload.public_id;
 
 
     const completedFile = await Task.findOneAndUpdate(
@@ -1167,7 +1210,8 @@ router.post("/completedTaskofEmployees/:taskToken", upload.single("file"), async
         {
             completedFile: pdfResult,
             messageByEmployee:empMessage,
-            done:"yes"
+            done:"yes",
+            taskPublicIDEmployee: public_idEmployee
         },
         {new:true}
     )

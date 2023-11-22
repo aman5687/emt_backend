@@ -19,6 +19,10 @@ const taskSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    taskPublicIDHR:{
+        type:String,
+        required:true,
+    },
     empToken:{
         type:String,
         default:null
@@ -36,6 +40,10 @@ const taskSchema = new mongoose.Schema({
         default:null,
     },
     completedFile:{
+        type:String,
+        default:null,
+    },
+    taskPublicIDEmployee:{
         type:String,
         default:null,
     },
